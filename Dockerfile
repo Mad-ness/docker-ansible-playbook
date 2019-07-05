@@ -1,6 +1,6 @@
-FROM alpine:3.9
+FROM alpine:3.10
 
-MAINTAINER zoltan@mullner.hu
+MAINTAINER dmadm2008@gmail.com
 
 RUN echo "===> Installing sudo to emulate normal OS behavior..."  && \
     apk --update add sudo                                         && \
@@ -14,7 +14,7 @@ RUN echo "===> Installing sudo to emulate normal OS behavior..."  && \
     \
     \
     echo "===> Installing Ansible..."  && \
-    pip install ansible==2.7.9         && \
+    pip install ansible>=2.8.0         && \
     \
     \
     echo "===> Installing handy tools (not absolutely required)..."  && \
@@ -44,11 +44,12 @@ RUN apk --no-cache --update add \
         jq \
         curl
 
-RUN pip install --no-cache-dir --upgrade yq
-
-RUN pip install --no-cache-dir --upgrade mitogen
-
-RUN mkdir -p /ansible/playbooks
+RUN pip install --no-cache-dir --upgrade yq && \
+    pip install --no-cache-dir --upgrade mitogen && \
+    useradd -u 1001 ansible && \
+    mkdir -p /ansible/playbooks
+    
+USER 1001
 
 WORKDIR /ansible/playbooks
 
